@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class Animal:
     alive = []
 
@@ -17,6 +20,10 @@ class Animal:
                 f"Hidden: {self.hidden}}}"
                 )
 
+    @classmethod
+    def dead_animal(cls, animal: Animal) -> None:
+        cls.alive.remove(animal)
+
 
 class Herbivore(Animal):
     def hide(self) -> None:
@@ -26,11 +33,11 @@ class Herbivore(Animal):
 class Carnivore(Animal):
     @staticmethod
     def bite(herbivore: Herbivore) -> None:
-        if isinstance(herbivore, Carnivore):
-            return None
+        bite_damage = 50
+        is_herbivore = isinstance(herbivore, Herbivore)
 
-        if not herbivore.hidden:
-            herbivore.health -= 50
+        if not herbivore.hidden and (herbivore.health > 0) and is_herbivore:
+            if herbivore.health <= bite_damage:
+                Animal.dead_animal(herbivore)
 
-        if herbivore.health <= 0:
-            Animal.alive.remove(herbivore)
+            herbivore.health -= bite_damage
